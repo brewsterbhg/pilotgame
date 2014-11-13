@@ -1,9 +1,14 @@
-﻿/// <reference path="constants.ts" />
+﻿/// <reference path="utility/assetloader.ts" />
+/// <reference path="constants.ts" />
 /// <reference path="objects/cathead.ts" />
 
 //Variables
 var stage: createjs.Stage;
 var game: createjs.Container; 
+
+//Objects
+var background: Objects.background;
+var catHead: Objects.cathead;
 
 var gameState;
 
@@ -11,10 +16,11 @@ var cathead;
 
 //Preload
 function preload() {
-
+    Utility.assetloader.init();
+    Utility.assetloader.loader.addEventListener("complete", initGame);
 }
 
-function init() {
+function initGame() {
     //Set up canvas and ticker
     stage = new createjs.Stage(document.getElementById("canvas"));
     stage.enableMouseOver();
@@ -52,10 +58,7 @@ function changeState(state) {
 *
 */
 function startGame() {
-    game = new createjs.Container();
-
-    cathead = new Objects.cathead();
-    stage.addChild(cathead);
+    game = new createjs.Container;
 }
 
 /*

@@ -1,2 +1,21 @@
 ﻿body {
+    background-color: #333333;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    border: 0;
+    overflow: hidden;
+    display: block;
 }
+
+footer {
+    text-align: center;
+    font-family: Verdana;
+    font-size: smaller;
+    background-color: #666666;
+    position:absolute;
+    bottom:0;
+    width: 100%;
+    height: 100px;
+    display: inline-block;
+ }

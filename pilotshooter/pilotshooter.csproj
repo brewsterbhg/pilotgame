@@ -68,6 +68,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\bg.png" />
     <Content Include="Assets\Images\cat_head_1.png" />
     <Content Include="Assets\Images\cat_head_2.png" />
     <Content Include="CSS\styles.css" />
@@ -86,8 +87,10 @@
     <TypeScriptCompile Include="Scripts\lib\preloadjs.d.ts" />
     <TypeScriptCompile Include="Scripts\lib\soundjs.d.ts" />
     <TypeScriptCompile Include="Scripts\lib\tweenjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\Objects\background.ts" />
     <TypeScriptCompile Include="Scripts\Objects\cathead.ts" />
     <TypeScriptCompile Include="Scripts\Objects\gameobject.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\assetloader.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Sounds\" />
