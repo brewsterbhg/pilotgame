@@ -1,8 +1,13 @@
 ﻿/// <reference path="constants.ts" />
+/// <reference path="objects/cathead.ts" />
 
 //Variables
-var stage;
+var stage: createjs.Stage;
+var game: createjs.Container; 
+
 var gameState;
+
+var cathead;
 
 //Preload
 function preload() {
@@ -23,11 +28,17 @@ function init() {
     startGame();
 }
 
+/**
+* This function changes the current state of the game
+*
+**/
 function changeState(state) {
     switch (state) {
         case constants.MENU_STATE:
+            //gameMenu();
             break;
         case constants.PLAY_STATE:
+            startGame();
             break;
         case constants.END_STATE:
             break;
@@ -36,10 +47,21 @@ function changeState(state) {
     }
 }
 
+/*
+* This function begins the game
+*
+*/
 function startGame() {
+    game = new createjs.Container();
 
+    cathead = new Objects.cathead();
+    stage.addChild(cathead);
 }
 
+/*
+* This function updates the stage
+*
+*/
 function gameLoop() {
     stage.update();
 }
