@@ -1,6 +1,8 @@
-﻿/// <reference path="utility/assetloader.ts" />
+﻿/// <reference path="Utility/assetloader.ts" />
+/// <reference path="Objects/gameobject.ts" />
 /// <reference path="constants.ts" />
-/// <reference path="objects/cathead.ts" />
+/// <reference path="Objects/background.ts" />
+/// <reference path="Objects/cathead.ts" />
 
 //Variables
 var stage: createjs.Stage;
@@ -8,11 +10,10 @@ var game: createjs.Container;
 
 //Objects
 var background: Objects.background;
+var background2: Objects.background;
 var catHead: Objects.cathead;
 
 var gameState;
-
-var cathead;
 
 //Preload
 function preload() {
@@ -22,14 +23,14 @@ function preload() {
 
 function initGame() {
     //Set up canvas and ticker
-    stage = new createjs.Stage(document.getElementById("canvas"));
+    stage = new createjs.Stage(document.getElementById("mainDisplay"));
     stage.enableMouseOver();
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", gameLoop);
 
     //Set initial game state
     gameState = constants.MENU_STATE;
-    changeState(gameState);
+    //changeState(gameState);
     //Start the game
     startGame();
 }
@@ -58,7 +59,17 @@ function changeState(state) {
 *
 */
 function startGame() {
-    game = new createjs.Container;
+    game = new createjs.Container();
+
+    background = new Objects.background(game);
+    background2 = new Objects.background(game);
+    background2.x = 0;
+    game.addChild(background);
+    game.addChild(background2);
+    catHead = new Objects.cathead(game);
+    game.addChild(catHead);
+    stage.addChild(game);
+
 }
 
 /*
@@ -66,5 +77,7 @@ function startGame() {
 *
 */
 function gameLoop() {
+    background.update();
+    background2.update();
     stage.update();
 }

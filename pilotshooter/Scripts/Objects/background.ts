@@ -14,12 +14,12 @@
         }
 
         reset() {
-            this.x = -this.width + stage.canvas.width;
+            this.x = this.width;
         }
 
         update() {
-            this.x -= 5;
-            if (this.x + this.width <= 0) {
+            this.x -= 3;
+            if (this.x + this.width - 5 <= 0) {
                 this.reset();
             }
         }

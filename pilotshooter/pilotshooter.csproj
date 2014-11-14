@@ -71,6 +71,7 @@
     <Content Include="Assets\Images\bg.png" />
     <Content Include="Assets\Images\cat_head_1.png" />
     <Content Include="Assets\Images\cat_head_2.png" />
+    <Content Include="CSS\normalize.css" />
     <Content Include="CSS\styles.css" />
     <Content Include="index.html" />
     <Content Include="Web.config" />
