@@ -2,6 +2,8 @@
 /// <reference path="Objects/gameobject.ts" />
 /// <reference path="constants.ts" />
 /// <reference path="Objects/background.ts" />
+/// <reference path="Objects/nebula.ts" />
+/// <reference path="Objects/trex.ts" />
 /// <reference path="Objects/cathead.ts" />
 //Variables
 var stage;
@@ -10,6 +12,8 @@ var game;
 //Objects
 var background;
 var background2;
+var trex;
+var nebula;
 var catHead;
 
 var gameState;
@@ -65,8 +69,12 @@ function startGame() {
     background2.x = 0;
     game.addChild(background);
     game.addChild(background2);
+    trex = new Objects.trex(game);
     catHead = new Objects.cathead(game);
+    nebula = new Objects.nebula(game);
+    game.addChild(trex);
     game.addChild(catHead);
+    game.addChild(nebula);
     stage.addChild(game);
 }
 
@@ -77,6 +85,8 @@ function startGame() {
 function gameLoop() {
     background.update();
     background2.update();
+    catHead.update();
+    nebula.update();
     stage.update();
 }
 //# sourceMappingURL=game.js.map
