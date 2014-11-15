@@ -72,6 +72,8 @@
     <Content Include="Assets\Images\cat_head_1.png" />
     <Content Include="Assets\Images\cat_head_2.png" />
     <Content Include="Assets\Images\nebula_1.png" />
+    <Content Include="Assets\Images\planet_1.png" />
+    <Content Include="Assets\Images\planet_2.png" />
     <Content Include="Assets\Images\trex.png" />
     <Content Include="CSS\normalize.css" />
     <Content Include="CSS\styles.css" />
@@ -93,7 +95,7 @@
     <TypeScriptCompile Include="Scripts\Objects\background.ts" />
     <TypeScriptCompile Include="Scripts\Objects\cathead.ts" />
     <TypeScriptCompile Include="Scripts\Objects\gameobject.ts" />
-    <TypeScriptCompile Include="Scripts\Objects\nebula.ts" />
+    <TypeScriptCompile Include="Scripts\Objects\scenery.ts" />
     <TypeScriptCompile Include="Scripts\Objects\trex.ts" />
     <TypeScriptCompile Include="Scripts\Utility\assetloader.ts" />
   </ItemGroup>

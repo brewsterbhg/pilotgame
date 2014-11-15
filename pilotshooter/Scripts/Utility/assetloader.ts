@@ -7,8 +7,10 @@
         static manifest = [{ id: "background", src: "Assets/Images/bg.png" },
             { id: "cat_1", src: "Assets/Images/cat_head_1.png" },
             { id: "cat_2", src: "Assets/Images/cat_head_2.png" },
-            { id: "nebula", src: "Assets/Images/nebula_1.png" },
-            { id: "trex", src: "Assets/Images/trex.png" }];
+            { id: "nebula_1", src: "Assets/Images/nebula_1.png" },
+            { id: "trex", src: "Assets/Images/trex.png" },
+            { id: "planet_1", src: "Assets/Images/planet_1.png" },
+            { id: "planet_2", src: "Assets/Images/planet_2.png" }];
 
         //On init
         static init() {
