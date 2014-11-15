@@ -17,6 +17,7 @@ var catHead;
 
 var sceneryObject;
 var numGen;
+var keysPressed = {};
 
 var gameState;
 
@@ -54,6 +55,7 @@ function changeState(state) {
             startGame();
             break;
         case constants.END_STATE:
+            gameOver();
             break;
         case constants.INSTRUCTION_STATE:
             break;
@@ -90,6 +92,8 @@ function instructionMenu() {
 function startGame() {
     //Add player and enemies
     trex = new Objects.trex(game);
+    window.addEventListener('keydown', moveTrex);
+    window.addEventListener('keyup', deleteKeys);
     catHead = new Objects.cathead(game);
     game.addChild(trex);
     game.addChild(catHead);
@@ -161,6 +165,30 @@ function randomSceneryUpdate() {
         sceneryObject = new Objects.scenery(game, "planet_2");
         sceneryObject.name = "bgObj";
     }
+
+    //Set index of scenery object to be above the backgrounds, below everything else
+    game.setChildIndex(sceneryObject, 2);
+}
+
+function moveTrex(event) {
+    var d = 10;
+    keysPressed[event.keyCode] = true;
+    if (38 in keysPressed) {
+        trex.y -= d;
+    }
+    if (40 in keysPressed) {
+        trex.y += d;
+    }
+    if (37 in keysPressed) {
+        trex.x -= d;
+    }
+    if (39 in keysPressed) {
+        trex.x += d;
+    }
+}
+
+function deleteKeys(event) {
+    delete keysPressed[event.keyCode];
 }
 
 /*
@@ -193,5 +221,6 @@ function gameLoop() {
 function gameOver() {
     game.removeChild(trex);
     game.removeChild(catHead);
+    var gameOver = Utility.assetloader.loader.getResult("gameOver");
 }
 //# sourceMappingURL=game.js.map

@@ -10,7 +10,8 @@
             { id: "nebula_1", src: "Assets/Images/nebula_1.png" },
             { id: "trex", src: "Assets/Images/trex.png" },
             { id: "planet_1", src: "Assets/Images/planet_1.png" },
-            { id: "planet_2", src: "Assets/Images/planet_2.png" }];
+            { id: "planet_2", src: "Assets/Images/planet_2.png" },
+            { id: "gameOver", src: "Assets/Images/game_over.png" }];
 
         //On init
         static init() {

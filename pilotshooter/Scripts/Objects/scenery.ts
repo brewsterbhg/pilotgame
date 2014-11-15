@@ -11,17 +11,8 @@
         }
 
         reset() {
-            this.x = stage.canvas.width + this.width;
+            this.x = stage.canvas.width + this.width * 0.5;
             this.y = Math.floor(Math.random() * stage.canvas.height);
-        }
-
-        isActive() {
-            if (this.game.getNumChildren() == 0) {
-                return true;
-            }
-            else {
-                return false;
-            }
         }
 
         update() {
