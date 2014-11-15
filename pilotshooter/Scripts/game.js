@@ -8,6 +8,7 @@
 //Variables
 var stage;
 var game;
+var playerLives = constants.PLAYER_LIVES;
 
 //Objects
 var background;
@@ -18,6 +19,7 @@ var catHead;
 var sceneryObject;
 var numGen;
 var keysPressed = {};
+var gunShots;
 
 var gameState;
 
@@ -144,7 +146,18 @@ function collisionCheck() {
     p2.y = catHead.y;
 
     if (distance(p1, p2) <= ((trex.width * 0.5) + (catHead.width * 0.5))) {
+        playerLives--;
+        if (playerLives == 0) {
+            gameOver();
+        }
         catHead.reset();
+    }
+}
+
+function checkShooting() {
+    if (gunShots.y >= catHead.y && gunShots.y <= catHead.y + catHead.height) {
+        catHead.hit();
+        console.log("haii");
     }
 }
 
@@ -173,21 +186,40 @@ function randomSceneryUpdate() {
 function moveTrex(event) {
     var d = 10;
     keysPressed[event.keyCode] = true;
-    if (38 in keysPressed) {
+    if (constants.MOVE_UP in keysPressed) {
         trex.y -= d;
     }
-    if (40 in keysPressed) {
+    if (constants.MOVE_DOWN in keysPressed) {
         trex.y += d;
     }
-    if (37 in keysPressed) {
+    if (constants.MOVE_LEFT in keysPressed) {
         trex.x -= d;
     }
-    if (39 in keysPressed) {
+    if (constants.MOVE_RIGHT in keysPressed) {
         trex.x += d;
+    }
+    if (constants.FIRE in keysPressed) {
+        if (game.getChildByName("shooting") == null) {
+            gunShots = new createjs.Sprite(Utility.assetloader.spriteSheet);
+            gunShots.play();
+            gunShots.x = trex.x + trex.width * 0.45;
+            gunShots.y = trex.y + trex.height * 0.03;
+            game.addChild(gunShots);
+            gunShots.name = "shooting";
+        } else if (game.getChildByName("shooting") != null) {
+            if (gunShots.y != trex.y + trex.height * 0.05 || gunShots.x != trex.x + trex.width * 0.45) {
+                gunShots.y = trex.y + trex.height * 0.03;
+                gunShots.x = trex.x + trex.width * 0.45;
+            }
+        }
+        checkShooting();
     }
 }
 
 function deleteKeys(event) {
+    if (event.keyCode == 32) {
+        game.removeChild(gunShots);
+    }
     delete keysPressed[event.keyCode];
 }
 
@@ -221,6 +253,10 @@ function gameLoop() {
 function gameOver() {
     game.removeChild(trex);
     game.removeChild(catHead);
-    var gameOver = Utility.assetloader.loader.getResult("gameOver");
+    window.removeEventListener('keydown', moveTrex);
+    window.removeEventListener('keyup', deleteKeys);
+    if (game.getChildByName("shooting") != null) {
+        game.removeChild(gunShots);
+    }
 }
 //# sourceMappingURL=game.js.map

@@ -2,6 +2,23 @@
     export class assetloader {
         //Class level variables
         static loader;
+        static spriteSheet;
+
+        static ssData = {
+            "images": ["Assets/Images/gunshooting.png"],
+            "frames": [
+
+                [42, 37, 27, 20],
+                [79, 31, 35, 24],
+                [79, 2, 42, 27],
+                [42, 2, 35, 33],
+                [2, 2, 38, 38]
+            ],
+            "animations": {
+
+                "gunshoot": [0,1,2,3,4]
+            },
+        }
         
         //The manifest of assets
         static manifest = [{ id: "background", src: "Assets/Images/bg.png" },
@@ -18,6 +35,8 @@
             this.loader = new createjs.LoadQueue();
             this.loader.installPlugin(createjs.Sound);
             this.loader.loadManifest(this.manifest);
+
+            this.spriteSheet = new createjs.SpriteSheet(this.ssData);
         }
     }
 } 
