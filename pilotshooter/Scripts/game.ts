@@ -23,6 +23,7 @@ var sceneryObject: Objects.scenery;
 var numGen: number;
 var keysPressed = {};
 var gunShots: createjs.Sprite;
+var heartsplosion: createjs.Sprite;
 
 var gameState;
 
@@ -73,13 +74,14 @@ function changeState(state) {
 **/
 function gameMenu() {
     //Create main game container
-    game = new createjs.Container();
+    var bgContainer = new createjs.Container();
     //Add backgrounds
-    background = new Objects.background(game);
-    background2 = new Objects.background(game);
+    background = new Objects.background(bgContainer);
+    background2 = new Objects.background(bgContainer);
     background2.x = 0;
-    game.addChild(background);
-    game.addChild(background2);
+    bgContainer.addChild(background);
+    bgContainer.addChild(background2);
+    stage.addChild(bgContainer);
 }
 
 /**
@@ -95,9 +97,10 @@ function instructionMenu() {
 *
 **/
 function startGame() {
+    game = new createjs.Container();
     //Add player and enemies
     trex = new Objects.trex(game);
-    window.addEventListener('keydown', moveTrex);
+    window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', deleteKeys);
     catHead = new Objects.cathead(game);
     catHead.addEventListener("addScore", addScore);
@@ -106,7 +109,6 @@ function startGame() {
     game.addChild(trex);
     game.addChild(catHead);
     stage.addChild(game);
-    
 }
 
 /**
@@ -194,7 +196,7 @@ function randomSceneryUpdate() {
     game.setChildIndex(sceneryObject, 2);
 }
 
-function moveTrex(event) {
+function keyDown(event) {
     var d = 10;
     keysPressed[event.keyCode] = true;
     if (constants.MOVE_UP in keysPressed) {
@@ -211,7 +213,7 @@ function moveTrex(event) {
     }
     if (constants.FIRE in keysPressed) {
         if (game.getChildByName("shooting") == null) {
-            gunShots = new createjs.Sprite(Utility.assetloader.spriteSheet);
+            gunShots = new createjs.Sprite(Utility.assetloader.gunSpriteSheet);
             gunShots.play();
             gunShots.x = trex.x + trex.width * 0.45;
             gunShots.y = trex.y + trex.height * 0.03;
@@ -226,6 +228,13 @@ function moveTrex(event) {
         }
         checkShooting();
     }
+    if (gameState == constants.END_STATE) {
+        if (constants.RESTART in keysPressed) {
+            stage.removeAllChildren();
+            changeState(constants.MENU_STATE);
+        }
+    }
+
 }
 
 function deleteKeys(event) {
@@ -258,7 +267,18 @@ function gameLoop() {
 }
 
 function addScore() {
+    heartsplosion = new createjs.Sprite(Utility.assetloader.explosionSpriteSheet, "bang");
+    game.addChild(heartsplosion);
+    heartsplosion.x = catHead.x;
+    heartsplosion.y = catHead.y;
+    heartsplosion.play();
+    heartsplosion.on("animationend", removeExplosion);
     scoreBoard.score += 100;
+}
+
+function removeExplosion(event) {
+    event.remove();
+    game.removeChild(heartsplosion);
 }
 
 /**
@@ -266,12 +286,19 @@ function addScore() {
 *
 **/
 function gameOver() {
-    game.removeChild(trex);
-    game.removeChild(catHead);
-    game.removeChild(scoreBoard);
-    window.removeEventListener('keydown', moveTrex);
-    window.removeEventListener('keyup', deleteKeys);
-    if (game.getChildByName("shooting") != null) {
-        game.removeChild(gunShots);
-    }
+    var finalScore = scoreBoard.score;
+    stage.removeChild(game);
+    var gameOver = new createjs.Bitmap(Utility.assetloader.loader.getResult("gameOver"));
+    gameOver.x = 100;
+    gameOver.y = 100;
+    stage.addChild(gameOver);
+    var displayScore = new createjs.Text("Final Score: " + finalScore, constants.GAME_FONT, constants.GAME_COLOUR);
+    displayScore.x = gameOver.x;
+    displayScore.y = gameOver.y + gameOver.image.height + 30;
+    var replayText = new createjs.Text("Press 'r' to replay.", constants.GAME_FONT, constants.GAME_COLOUR);
+    replayText.x = gameOver.x;
+    replayText.y = displayScore.y + 40;
+    stage.addChild(displayScore);
+    stage.addChild(replayText);
+
 }

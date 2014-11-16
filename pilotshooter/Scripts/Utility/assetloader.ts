@@ -2,7 +2,8 @@
     export class assetloader {
         //Class level variables
         static loader;
-        static spriteSheet;
+        static gunSpriteSheet;
+        static explosionSpriteSheet;
 
         static ssData = {
             "images": ["Assets/Images/gunshooting.png"],
@@ -17,6 +18,26 @@
             "animations": {
 
                 "gunshoot": [0,1,2,3,4]
+            },
+        }
+
+        static explosionData = {
+            "images": ["Assets/Images/heartsplosion.png"],
+            "frames": [
+
+                [314, 94, 18, 18],
+                [125, 99, 27, 25],
+                [314, 57, 32, 35],
+                [270, 72, 42, 42],
+                [218, 72, 50, 46],
+                [286, 2, 57, 53],
+                [218, 2, 66, 68],
+                [125, 2, 91, 95],
+                [2, 2, 121, 124]
+            ],
+            "animations": {
+
+                bang: [0,1,2,3,4,5,6,7,8, false]
             },
         }
         
@@ -36,7 +57,8 @@
             this.loader.installPlugin(createjs.Sound);
             this.loader.loadManifest(this.manifest);
 
-            this.spriteSheet = new createjs.SpriteSheet(this.ssData);
+            this.gunSpriteSheet = new createjs.SpriteSheet(this.ssData);
+            this.explosionSpriteSheet = new createjs.SpriteSheet(this.explosionData);
         }
     }
 } 
