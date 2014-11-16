@@ -97,6 +97,7 @@
     <TypeScriptCompile Include="Scripts\Objects\cathead.ts" />
     <TypeScriptCompile Include="Scripts\Objects\gameobject.ts" />
     <TypeScriptCompile Include="Scripts\Objects\scenery.ts" />
+    <TypeScriptCompile Include="Scripts\Objects\scoreboard.ts" />
     <TypeScriptCompile Include="Scripts\Objects\trex.ts" />
     <TypeScriptCompile Include="Scripts\Utility\assetloader.ts" />
   </ItemGroup>

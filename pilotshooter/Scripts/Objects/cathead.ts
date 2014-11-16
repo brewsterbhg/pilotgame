@@ -11,6 +11,9 @@
         }
 
         reset() {
+            if (this.game.getChildByName("hpBar") != null) {
+                this.game.removeChild(this.hpBar);
+            }
             this.health = 10;
             this.x = stage.canvas.width + this.width;
             this.y = Math.floor(Math.random() * stage.canvas.height);
@@ -22,7 +25,7 @@
             if (this.game.getChildByName("hpBar") != null) {
                 this.game.removeChild(this.hpBar);
             }
-            this.hpBar = new createjs.Text(this.health + "/10", "bold 18px Monotype Corsiva", "#FFFFFF");
+            this.hpBar = new createjs.Text(this.health + "/10", constants.GAME_FONT, constants.GAME_COLOUR);
             this.game.addChild(this.hpBar);
             this.hpBar.name = "hpBar";
             if (this.health == 0) {
@@ -31,7 +34,9 @@
         }
 
         destroy() {
-            this.update();
+            this.dispatchEvent('addScore');
+            this.game.removeChild(this.hpBar);
+            this.reset();
         }
 
         update() {

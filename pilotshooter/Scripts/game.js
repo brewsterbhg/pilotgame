@@ -1,9 +1,10 @@
 ﻿/// <reference path="Utility/assetloader.ts" />
 /// <reference path="Objects/gameobject.ts" />
-/// <reference path="objects/scenery.ts" />
+/// <reference path="Objects/scenery.ts" />
 /// <reference path="constants.ts" />
 /// <reference path="Objects/background.ts" />
 /// <reference path="Objects/trex.ts" />
+/// <reference path="Objects/scoreboard.ts" />
 /// <reference path="Objects/cathead.ts" />
 //Variables
 var stage;
@@ -15,6 +16,7 @@ var background;
 var background2;
 var trex;
 var catHead;
+var scoreBoard;
 
 var sceneryObject;
 var numGen;
@@ -60,6 +62,7 @@ function changeState(state) {
             gameOver();
             break;
         case constants.INSTRUCTION_STATE:
+            instructionMenu();
             break;
     }
 }
@@ -97,6 +100,9 @@ function startGame() {
     window.addEventListener('keydown', moveTrex);
     window.addEventListener('keyup', deleteKeys);
     catHead = new Objects.cathead(game);
+    catHead.addEventListener("addScore", addScore);
+    scoreBoard = new Objects.scoreboard(game);
+    game.addChild(scoreBoard);
     game.addChild(trex);
     game.addChild(catHead);
     stage.addChild(game);
@@ -147,8 +153,10 @@ function collisionCheck() {
 
     if (distance(p1, p2) <= ((trex.width * 0.5) + (catHead.width * 0.5))) {
         playerLives--;
+        scoreBoard.lives--;
         if (playerLives == 0) {
-            gameOver();
+            //Call game over
+            changeState(constants.END_STATE);
         }
         catHead.reset();
     }
@@ -157,7 +165,6 @@ function collisionCheck() {
 function checkShooting() {
     if (gunShots.y >= catHead.y && gunShots.y <= catHead.y + catHead.height) {
         catHead.hit();
-        console.log("haii");
     }
 }
 
@@ -230,7 +237,6 @@ function deleteKeys(event) {
 function gameLoop() {
     //Check if theres a scenery object. If not, generate a random number
     if (game.getChildByName("bgObj") == null) {
-        console.log("hit");
         numGen = Math.floor(Math.random() * 100);
         randomSceneryUpdate();
     }
@@ -242,8 +248,13 @@ function gameLoop() {
     background.update();
     background2.update();
     catHead.update();
+    scoreBoard.update();
     collisionCheck();
     stage.update();
+}
+
+function addScore() {
+    scoreBoard.score += 100;
 }
 
 /**
@@ -253,6 +264,7 @@ function gameLoop() {
 function gameOver() {
     game.removeChild(trex);
     game.removeChild(catHead);
+    game.removeChild(scoreBoard);
     window.removeEventListener('keydown', moveTrex);
     window.removeEventListener('keyup', deleteKeys);
     if (game.getChildByName("shooting") != null) {
