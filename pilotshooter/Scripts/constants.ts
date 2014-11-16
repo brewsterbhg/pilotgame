@@ -1,4 +1,11 @@
-﻿module constants {
+﻿﻿/*********************************
+Author: Keith Brewster
+File: constants.ts
+Last Updated: 11/15/2014
+Description: This typscript file holds all
+of the games constants
+*********************************/
+module constants {
     //State constants
     export var MENU_STATE: number = 0;
     export var PLAY_STATE: number = 1;
@@ -11,6 +18,7 @@
     export var FIRE: number = 32;
     export var RESTART: number = 82;
     export var PLAYER_LIVES: number = 3;
-    export var GAME_FONT: string = "bold 18px Monotype Corsiva"
+    export var GAME_FONT: string = "bold 18px Verdana"
     export var GAME_COLOUR: string = "#FFFFFF";
+    export var EXPLOSION_TIMER: number = 50;
 }  

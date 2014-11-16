@@ -1,4 +1,12 @@
-﻿module Objects {
+﻿﻿/*********************************
+Author: Keith Brewster
+File: scoreboard.ts
+Last Updated: 11/15/2014
+Description: This typscript file keeps
+track and displays the users current lives
+and score
+*********************************/
+module Objects {
     //Scoreboard Class
     export class scoreboard extends createjs.DisplayObject{
         //Variables

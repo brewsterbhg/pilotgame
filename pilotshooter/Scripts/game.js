@@ -6,6 +6,13 @@
 /// <reference path="Objects/trex.ts" />
 /// <reference path="Objects/scoreboard.ts" />
 /// <reference path="Objects/cathead.ts" />
+/*********************************
+Author: Keith Brewster
+Project: Pilot Game
+Last Updated: 11/15/2014
+Description: This typescript file handles the
+main game loop for the pilot shooter
+*********************************/
 //Variables
 var stage;
 var bgContainer;
@@ -28,6 +35,8 @@ var shooting;
 var gunShots;
 var heartsplosion;
 var gameState;
+var exploding = false;
+var timer = 0;
 
 //Preload
 function preload() {
@@ -45,6 +54,7 @@ function initGame() {
     //Add event listeners for key presses
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', deleteKeys);
+    createjs.Sound.play("bgMusic", "none", 0, 0, -1);
 
     //Set initial game state
     gameState = constants.MENU_STATE;
@@ -199,6 +209,7 @@ function collisionCheck() {
 
     if (distance(p1, p2) <= ((trex.width * 0.5) + (catHead.width * 0.5))) {
         //Lose a life
+        createjs.Sound.play("player_death");
         playerLives--;
         scoreBoard.lives--;
         if (playerLives == 0) {
@@ -216,6 +227,8 @@ function collisionCheck() {
 *
 **/
 function checkShooting() {
+    createjs.Sound.play("shot");
+
     //Check if gun is level with cat head
     if (gunShots.y >= (catHead.y - catHead.height * 0.5) && gunShots.y <= (catHead.y - catHead.height * 0.5) + catHead.height) {
         catHead.hit();
@@ -355,6 +368,16 @@ function gameLoop() {
     if (shooting) {
         checkShooting();
     }
+
+    //If exploding, remove after time
+    if (exploding) {
+        timer++;
+        if (timer > constants.EXPLOSION_TIMER) {
+            game.removeChild(heartsplosion);
+            timer = 0;
+            exploding = false;
+        }
+    }
     stage.update();
 }
 
@@ -369,15 +392,10 @@ function addScore() {
     heartsplosion.x = catHead.x;
     heartsplosion.y = catHead.y;
     heartsplosion.play();
-    heartsplosion.on("animationend", removeExplosion);
+    exploding = true;
 
     //Add score
     scoreBoard.score += 100;
-}
-
-function removeExplosion(event) {
-    event.remove();
-    game.removeChild(heartsplosion);
 }
 
 /**

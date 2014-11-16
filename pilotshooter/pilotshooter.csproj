@@ -74,7 +74,6 @@
   <ItemGroup>
     <Content Include="Assets\Images\bg.png" />
     <Content Include="Assets\Images\cat_head_1.png" />
-    <Content Include="Assets\Images\cat_head_2.png" />
     <Content Include="Assets\Images\nebula_1.png" />
     <Content Include="Assets\Images\planet_1.png" />
     <Content Include="Assets\Images\planet_2.png" />

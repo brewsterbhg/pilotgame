@@ -1,4 +1,11 @@
-﻿module Objects {
+﻿﻿/*********************************
+Author: Keith Brewster
+File: cathead.ts
+Last Updated: 11/15/2014
+Description: This typscript file holds all the
+functions for the enemy object
+*********************************/
+module Objects {
     //Cathead class
     export class cathead extends Objects.gameobject {
         //Variables
@@ -25,16 +32,20 @@
         //Run when the cat is being shot
         hit() {
             this.health--;
+            createjs.Sound.play("cat_hurt");
             if (this.game.getChildByName("hpBar") != null) {
                 this.game.removeChild(this.hpBar);
             }
             //Display cats hp
             this.hpBar = new createjs.Text(this.health + "/75", constants.GAME_FONT, constants.GAME_COLOUR);
             this.game.addChild(this.hpBar);
+            this.hpBar.x = this.x;
+            this.hpBar.y = this.y + this.height * 0.8;
             this.hpBar.name = "hpBar";
             //On zero health, run destroy
             if (this.health == 0) {
                 this.destroy();
+                createjs.Sound.play("cat_death");
             }
         }
 

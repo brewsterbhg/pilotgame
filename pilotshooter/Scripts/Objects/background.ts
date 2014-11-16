@@ -1,4 +1,11 @@
-﻿module Objects {
+﻿﻿/*********************************
+Author: Keith Brewster
+File: background.ts
+Last Updated: 11/15/2014
+Description: This typscript file holds all
+of the functions for the game background object
+*********************************/
+module Objects {
     export class background extends createjs.Bitmap {
         width: number;
         height: number;

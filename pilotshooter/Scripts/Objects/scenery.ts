@@ -1,4 +1,11 @@
-﻿module Objects {
+﻿﻿/*********************************
+Author: Keith Brewster
+File: scenery.ts
+Last Updated: 11/15/2014
+Description: This typscript file holds all
+of the functions for the background scenery
+*********************************/
+module Objects {
     //Scenery class
     export class scenery extends Objects.gameobject {
         sceneryType: string;

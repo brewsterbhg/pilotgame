@@ -1,4 +1,11 @@
-﻿module Objects {
+﻿﻿/*********************************
+Author: Keith Brewster
+File: trex.ts
+Last Updated: 11/15/2014
+Description: This typscript file holds all
+the functions for the players avatar
+*********************************/
+module Objects {
     //Trex class
     export class trex extends Objects.gameobject {
         constructor(game: createjs.Container) {
