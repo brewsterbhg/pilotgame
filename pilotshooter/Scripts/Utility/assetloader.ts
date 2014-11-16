@@ -49,7 +49,10 @@
             { id: "trex", src: "Assets/Images/trex.png" },
             { id: "planet_1", src: "Assets/Images/planet_1.png" },
             { id: "planet_2", src: "Assets/Images/planet_2.png" },
-            { id: "gameOver", src: "Assets/Images/game_over.png" }];
+            { id: "gameOver", src: "Assets/Images/game_over.png" },
+            { id: "play", src: "Assets/Images/playButton.png" },
+            { id: "instructions", src: "Assets/Images/instructionsButton.png" },
+            { id: "instructMenu", src: "Assets/Images/instructions.png" }];
 
         //On init
         static init() {

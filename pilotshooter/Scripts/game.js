@@ -8,8 +8,10 @@
 /// <reference path="Objects/cathead.ts" />
 //Variables
 var stage;
+var bgContainer;
 var game;
-var playerLives = constants.PLAYER_LIVES;
+var playerLives;
+var instructions;
 
 //Objects
 var background;
@@ -17,13 +19,14 @@ var background2;
 var trex;
 var catHead;
 var scoreBoard;
-
 var sceneryObject;
+
+//Game variables
 var numGen;
 var keysPressed = {};
+var shooting;
 var gunShots;
 var heartsplosion;
-
 var gameState;
 
 //Preload
@@ -39,12 +42,13 @@ function initGame() {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", gameLoop);
 
+    //Add event listeners for key presses
+    window.addEventListener('keydown', keyDown);
+    window.addEventListener('keyup', deleteKeys);
+
     //Set initial game state
     gameState = constants.MENU_STATE;
     changeState(gameState);
-
-    //Start the game
-    startGame();
 }
 
 /**
@@ -52,16 +56,20 @@ function initGame() {
 *
 **/
 function changeState(state) {
+    gameState = state;
     switch (state) {
         case constants.MENU_STATE:
             gameMenu();
             break;
+
         case constants.PLAY_STATE:
             startGame();
             break;
+
         case constants.END_STATE:
             gameOver();
             break;
+
         case constants.INSTRUCTION_STATE:
             instructionMenu();
             break;
@@ -73,8 +81,8 @@ function changeState(state) {
 *
 **/
 function gameMenu() {
-    //Create main game container
-    var bgContainer = new createjs.Container();
+    //Create background container
+    bgContainer = new createjs.Container();
 
     //Add backgrounds
     background = new Objects.background(bgContainer);
@@ -82,6 +90,34 @@ function gameMenu() {
     background2.x = 0;
     bgContainer.addChild(background);
     bgContainer.addChild(background2);
+
+    //Create play and instruction buttons
+    var playButton = new createjs.Bitmap(Utility.assetloader.loader.getResult("play"));
+    var instructionsButton = new createjs.Bitmap(Utility.assetloader.loader.getResult("instructions"));
+    playButton.x = (stage.canvas.width - playButton.image.width) * 0.5;
+    playButton.y = stage.canvas.height * 0.3;
+    instructionsButton.x = (stage.canvas.width - instructionsButton.image.width) * 0.5;
+    instructionsButton.y = playButton.y + playButton.image.height + stage.canvas.height * 0.1;
+    bgContainer.addChild(playButton);
+    bgContainer.addChild(instructionsButton);
+
+    //Add play button event listeners
+    playButton.addEventListener("click", function () {
+        bgContainer.removeChild(playButton);
+        bgContainer.removeChild(instructionsButton);
+        changeState(constants.PLAY_STATE);
+    });
+    playButton.addEventListener("mouseover", mousePointer);
+    playButton.addEventListener("mouseout", mouseDefault);
+
+    //Add instruction button event listeners
+    instructionsButton.addEventListener("click", function () {
+        bgContainer.removeChild(playButton);
+        bgContainer.removeChild(instructionsButton);
+        changeState(constants.INSTRUCTION_STATE);
+    });
+    instructionsButton.addEventListener("mouseover", mousePointer);
+    instructionsButton.addEventListener("mouseout", mouseDefault);
     stage.addChild(bgContainer);
 }
 
@@ -90,6 +126,11 @@ function gameMenu() {
 *
 **/
 function instructionMenu() {
+    //Display instructions menu
+    instructions = new createjs.Bitmap(Utility.assetloader.loader.getResult("instructMenu"));
+    instructions.x = (stage.canvas.width - instructions.image.width) * 0.5;
+    instructions.y = (stage.canvas.height - instructions.image.height) * 0.5;
+    bgContainer.addChild(instructions);
 }
 
 /**
@@ -97,12 +138,12 @@ function instructionMenu() {
 *
 **/
 function startGame() {
+    //Set player lives
+    playerLives = constants.PLAYER_LIVES;
     game = new createjs.Container();
 
-    //Add player and enemies
+    //Add player, enemies, and scoreboard
     trex = new Objects.trex(game);
-    window.addEventListener('keydown', keyDown);
-    window.addEventListener('keyup', deleteKeys);
     catHead = new Objects.cathead(game);
     catHead.addEventListener("addScore", addScore);
     scoreBoard = new Objects.scoreboard(game);
@@ -117,6 +158,7 @@ function startGame() {
 *
 **/
 function distance(point1, point2) {
+    //Get points
     var p1;
     var p2;
     var itemX;
@@ -137,8 +179,8 @@ function distance(point1, point2) {
     itemX = itemX * itemX;
     itemY = itemY * itemY;
 
+    //Return the distance result
     result = Math.sqrt(itemX + itemY);
-
     return result;
 }
 
@@ -147,27 +189,35 @@ function distance(point1, point2) {
 *
 **/
 function collisionCheck() {
+    //Create points
     var p1 = new createjs.Point();
     var p2 = new createjs.Point();
-
     p1.x = trex.x;
     p1.y = trex.y;
     p2.x = catHead.x;
     p2.y = catHead.y;
 
     if (distance(p1, p2) <= ((trex.width * 0.5) + (catHead.width * 0.5))) {
+        //Lose a life
         playerLives--;
         scoreBoard.lives--;
         if (playerLives == 0) {
-            //Call game over
+            //Call game over on zero lives
             changeState(constants.END_STATE);
         }
+
+        //Remove cat head
         catHead.reset();
     }
 }
 
+/**
+* This function runs while the user is pressing the fire button
+*
+**/
 function checkShooting() {
-    if (gunShots.y >= catHead.y && gunShots.y <= catHead.y + catHead.height) {
+    //Check if gun is level with cat head
+    if (gunShots.y >= (catHead.y - catHead.height * 0.5) && gunShots.y <= (catHead.y - catHead.height * 0.5) + catHead.height) {
         catHead.hit();
     }
 }
@@ -194,37 +244,66 @@ function randomSceneryUpdate() {
     game.setChildIndex(sceneryObject, 2);
 }
 
+/**
+* This function reads what keys the user is currently pressing
+*
+**/
 function keyDown(event) {
+    //The distance to move the character
     var d = 10;
     keysPressed[event.keyCode] = true;
-    if (constants.MOVE_UP in keysPressed) {
-        trex.y -= d;
+
+    //If in instruction menu, any button will leave state
+    if (gameState == constants.INSTRUCTION_STATE) {
+        bgContainer.removeChild(instructions);
+        changeState(constants.MENU_STATE);
     }
-    if (constants.MOVE_DOWN in keysPressed) {
-        trex.y += d;
-    }
-    if (constants.MOVE_LEFT in keysPressed) {
-        trex.x -= d;
-    }
-    if (constants.MOVE_RIGHT in keysPressed) {
-        trex.x += d;
-    }
-    if (constants.FIRE in keysPressed) {
-        if (game.getChildByName("shooting") == null) {
-            gunShots = new createjs.Sprite(Utility.assetloader.gunSpriteSheet);
-            gunShots.play();
-            gunShots.x = trex.x + trex.width * 0.45;
-            gunShots.y = trex.y + trex.height * 0.03;
-            game.addChild(gunShots);
-            gunShots.name = "shooting";
-        } else if (game.getChildByName("shooting") != null) {
-            if (gunShots.y != trex.y + trex.height * 0.05 || gunShots.x != trex.x + trex.width * 0.45) {
-                gunShots.y = trex.y + trex.height * 0.03;
+
+    //If in play state
+    if (gameState == constants.PLAY_STATE) {
+        //User presses up
+        if (constants.MOVE_UP in keysPressed) {
+            trex.y -= d;
+        }
+
+        //User presses down
+        if (constants.MOVE_DOWN in keysPressed) {
+            trex.y += d;
+        }
+
+        //User presses left
+        if (constants.MOVE_LEFT in keysPressed) {
+            trex.x -= d;
+        }
+
+        //User presses right
+        if (constants.MOVE_RIGHT in keysPressed) {
+            trex.x += d;
+        }
+
+        //User pushes space bar
+        if (constants.FIRE in keysPressed) {
+            //Set shooting flag to true
+            shooting = true;
+
+            //Set gun animation
+            if (game.getChildByName("shooting") == null) {
+                gunShots = new createjs.Sprite(Utility.assetloader.gunSpriteSheet);
+                gunShots.play();
                 gunShots.x = trex.x + trex.width * 0.45;
+                gunShots.y = trex.y + trex.height * 0.03;
+                game.addChild(gunShots);
+                gunShots.name = "shooting";
+            } else if (game.getChildByName("shooting") != null) {
+                if (gunShots.y != trex.y + trex.height * 0.05 || gunShots.x != trex.x + trex.width * 0.45) {
+                    gunShots.y = trex.y + trex.height * 0.03;
+                    gunShots.x = trex.x + trex.width * 0.45;
+                }
             }
         }
-        checkShooting();
     }
+
+    //If on game over screen, pushing r will call the menu state
     if (gameState == constants.END_STATE) {
         if (constants.RESTART in keysPressed) {
             stage.removeAllChildren();
@@ -233,9 +312,15 @@ function keyDown(event) {
     }
 }
 
+/**
+* This function removes keys from the dictionary on key release
+*
+**/
 function deleteKeys(event) {
-    if (event.keyCode == 32) {
+    //If space bar is released, set flag to false and remove animation
+    if (event.keyCode == constants.FIRE) {
         game.removeChild(gunShots);
+        shooting = false;
     }
     delete keysPressed[event.keyCode];
 }
@@ -245,31 +330,48 @@ function deleteKeys(event) {
 *
 */
 function gameLoop() {
-    //Check if theres a scenery object. If not, generate a random number
-    if (game.getChildByName("bgObj") == null) {
-        numGen = Math.floor(Math.random() * 100);
-        randomSceneryUpdate();
+    //Only run these updates in play state
+    if (gameState == constants.PLAY_STATE) {
+        //Check if theres a scenery object. If not, generate a random number
+        if (game.getChildByName("bgObj") == null) {
+            numGen = Math.floor(Math.random() * 100);
+            randomSceneryUpdate();
+        }
+
+        //If there is a scenery object, update it
+        if (game.getChildByName("bgObj") != null) {
+            sceneryObject.update();
+        }
+        catHead.update();
+        scoreBoard.update();
+        collisionCheck();
     }
 
-    //If there is a scenery object, update it
-    if (game.getChildByName("bgObj") != null) {
-        sceneryObject.update();
-    }
+    //Background update can always run
     background.update();
     background2.update();
-    catHead.update();
-    scoreBoard.update();
-    collisionCheck();
+
+    //If shooting flag is true, check shooting
+    if (shooting) {
+        checkShooting();
+    }
     stage.update();
 }
 
+/**
+* This function adds score to the users total on enemy kills
+*
+**/
 function addScore() {
+    //Enemy death animation
     heartsplosion = new createjs.Sprite(Utility.assetloader.explosionSpriteSheet, "bang");
     game.addChild(heartsplosion);
     heartsplosion.x = catHead.x;
     heartsplosion.y = catHead.y;
     heartsplosion.play();
     heartsplosion.on("animationend", removeExplosion);
+
+    //Add score
     scoreBoard.score += 100;
 }
 
@@ -283,6 +385,7 @@ function removeExplosion(event) {
 *
 **/
 function gameOver() {
+    //Add game over screen items
     var finalScore = scoreBoard.score;
     stage.removeChild(game);
     var gameOver = new createjs.Bitmap(Utility.assetloader.loader.getResult("gameOver"));
@@ -297,5 +400,21 @@ function gameOver() {
     replayText.y = displayScore.y + 40;
     stage.addChild(displayScore);
     stage.addChild(replayText);
+}
+
+/**
+* Changing the cursor to pointer for hoverable objects
+*
+**/
+function mousePointer(e) {
+    document.body.style.cursor = 'pointer';
+}
+
+/**
+* Changing the cursor back to default on mouse out
+*
+**/
+function mouseDefault(e) {
+    document.body.style.cursor = 'default';
 }
 //# sourceMappingURL=game.js.map

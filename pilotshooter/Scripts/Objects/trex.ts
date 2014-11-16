@@ -1,5 +1,5 @@
 ﻿module Objects {
-    //Nebula class
+    //Trex class
     export class trex extends Objects.gameobject {
         constructor(game: createjs.Container) {
             super(game, "trex");
